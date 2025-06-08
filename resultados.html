@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Resultados Finales - Métodos Numéricos</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</head>
+<body>
+    <header>
+        <h1 class="page-title">Resultados Finales y Conclusiones</h1>
+    </header>
+    <nav class="main-menu">
+        <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="ejercicio1.html">Ejercicio 1</a></li>
+            <li><a href="ejercicio2.html">Ejercicio 2</a></li>
+            <li><a href="ejercicio3.html">Ejercicio 3</a></li>
+            <li><a href="resultados.html" class="active">Resultados</a></li>
+        </ul>
+    </nav>
+    <main class="container">
+        <h2>Resumen de Ejercicios</h2>
+        <p><strong>Ejercicio 1: Crecimiento Poblacional (Problema 37 del PDF):</strong>  Se modela el crecimiento poblacional de especies con capacidad limitada mediante la ecuación:</p>
+        <p class="math-equation">$$ \frac{dN}{dt}=kN(N_{M}-N) $$</p>
+        <p>Donde $N$ es el tamaño de la población, $N_{M}$ es el número límite para la población, y $k$ es una constante. Se considera el caso donde $N_{M}=5000$, $k=0.000095 \text{ 1/yr}$, y $N(0)=100$. El intervalo de tiempo es de $0 \le t \le 20$ años.</p>
+
+        <p><strong>Ejercicio 2: Crecimiento Tumoral (Problema 39 del PDF):</strong>  El crecimiento tumoral se modela con la ecuación:</p>
+        <p class="math-equation">$$ \frac{dA}{dt}=\alpha A\left[1-\left(\frac{A}{k}\right)^{\nu}\right] $$</p>
+        <p>Donde $A(t)$ es el área del tumor y $\alpha$, $k$, y $\nu$ son constantes. Se resuelve la ecuación para $0 \le t \le 30$ días, con $\alpha=0.8$, $k=60$, $\nu=0.25$, y $A(0)=1 \text{ mm}^2$.</p>
+
+        <p><strong>Ejercicio 3: Caída Libre con Resistencia del Aire (Problema 40 del PDF):</strong>  La velocidad de un objeto que cae libremente debido a la gravedad terrestre se modela con la ecuación:</p>
+        <p class="math-equation">$$ m\frac{dv}{dt}=-mg+kv^{2} $$</p>
+        <p>Donde $m$ es la masa del objeto, $g=9.81 \text{ m/s}^2$, y $k$ es una constante. Se resuelve la ecuación para $v$ en el caso $m=5 \text{ kg}$, $k=0.05 \text{ kg/m}$, para $0 \le t \le 15 \text{ s}$ y $v(0)=0 \text{ m/s}$.</p>
+
+        <h2>Resultados Finales</h2>
+        <table class="ode-table">
+            <thead>
+                <tr>
+                    <th>Ejercicio</th>
+                    <th>Método</th>
+                    <th>Resultado Final ($N(20)$, $A(30)$, $v(15)$)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td rowspan="2">Ejercicio 1</td>
+                    <td>Heun</td>
+                    <td id="resEj1Heun">Calculando...</td>
+                </tr>
+                <tr>
+                    <td>RK4</td>
+                    <td id="resEj1RK4">Calculando...</td>
+                </tr>
+                <tr>
+                    <td rowspan="2">Ejercicio 2</td>
+                    <td>Heun</td>
+                    <td id="resEj2Heun">Calculando...</td>
+                </tr>
+                <tr>
+                    <td>RK4</td>
+                    <td id="resEj2RK4">Calculando...</td>
+                </tr>
+                <tr>
+                    <td rowspan="2">Ejercicio 3</td>
+                    <td>Heun</td>
+                    <td id="resEj3Heun">Calculando...</td>
+                </tr>
+                <tr>
+                    <td>RK4</td>
+                    <td id="resEj3RK4">Calculando...</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Gráficas Comparativas</h2>
+        <div class="chart-container">
+            <h3>Ejercicio 1: Crecimiento Poblacional</h3>
+            <canvas id="chartEj1" width="600" height="300"></canvas>
+            <h3>Ejercicio 2: Crecimiento Tumoral</h3>
+            <canvas id="chartEj2" width="600" height="300"></canvas>
+            <h3>Ejercicio 3: Caída Libre con Resistencia del Aire</h3>
+            <canvas id="chartEj3" width="600" height="300"></canvas>
+        </div>
+
+        <h2>Conclusiones Detalladas</h2>
+        <h3>Ejercicio 1: Crecimiento Poblacional</h3>
+        <p>
+            En este ejercicio de crecimiento poblacional, modelado por la ecuación $\frac{dN}{dt}=kN^{\top}(N_{M}-N^{\top})$ , la población $N(t)$ crece inicialmente de forma exponencial y luego se estabiliza a medida que se acerca a la capacidad límite $N_M=5000$. Los resultados obtenidos muestran que para $t=20$, el método de Heun predice una población de 4980.5022031, mientras que RK4 predice 4981.7254910. Ambos valores están significativamente por encima de la población inicial de $N(0)=100$  y se acercan a $N_M=5000$, lo que confirma el comportamiento logístico esperado. La diferencia entre ambos métodos es mínima en este caso, con RK4 arrojando un valor ligeramente mayor, lo que sugiere una ligera mejora en la precisión al considerar el comportamiento asintótico hacia la capacidad límite.
+        </p>
+
+        <h3>Ejercicio 2: Crecimiento Tumoral</h3>
+        <p>
+            El modelo de crecimiento tumoral, dado por la ecuación $\frac{dA}{dt}=\alpha A[1-(\frac{A}{k})^{\nu}]$ , exhibe una tendencia a la saturación, con el área del tumor $A(t)$ comenzando en $A(0)=1~mm^{2}$ y esperándose que aumente hasta acercarse al valor $k=60$. Para $t=30$ días, el método de Heun arroja un resultado de 58.9392027, mientras que RK4 proporciona 58.9508044. Ambos métodos predicen un crecimiento sustancial que se aproxima al valor de saturación de $k=60$. La diferencia entre los resultados de Heun y RK4 es muy pequeña, lo que indica que ambos métodos son bastante consistentes para este problema. No obstante, RK4, siendo un método de orden superior, ofrece una estimación marginalmente más alta, lo que podría implicar una mayor precisión en la aproximación al comportamiento real del tumor.
+        </p>
+
+        <h3>Ejercicio 3: Caída Libre con Resistencia del Aire</h3>
+        <p>
+            Para el problema de caída libre con resistencia del aire, modelado por la ecuación $m\frac{dv}{dt}=-mg+kv^{2}$, la velocidad $v(t)$ debería aumentar desde $v(0)=0~m/s$ y aproximarse a una velocidad terminal. Los resultados muestran que para $t=15~s$, la velocidad calculada por el método de Heun es -31.3148099 m/s, y por RK4 es -31.3157147 m/s. La velocidad terminal se alcanza cuando la fuerza de gravedad se equilibra con la resistencia del aire, lo que se traduce en una velocidad constante. La ligera diferencia entre los valores obtenidos por Heun y RK4 sugiere que ambos métodos convergen a un valor muy similar para la velocidad terminal dentro del intervalo de tiempo especificado. El valor negativo indica la dirección de la caída. La similitud en los resultados refuerza la robustez de ambos métodos para este tipo de problema no lineal.
+        </p>
+
+        <p>
+            En resumen, la elección del método numérico (Heun o RK4) depende de la precisión requerida y la naturaleza de la ecuación diferencial. Para los tres ejercicios presentados, ambos métodos (Heun y RK4) proporcionaron resultados muy similares, lo que indica su adecuación para modelar estos fenómenos. Sin embargo, RK4, al ser un método de Runge-Kutta de 4º orden, es generalmente superior debido a su mayor orden de precisión y estabilidad, especialmente en la integración de sistemas no lineales. Aunque las diferencias numéricas en estos resultados finales son pequeñas, en casos donde la precisión es crítica o para intervalos de tiempo más largos, RK4 suele ser la opción preferible.
+        </p>
+    </main>
+
+    <script src="js/ode_solver.js"></script>
+    <script>
+        // Define the ODE parameters for each exercise
+        const paramsEjercicio1 = {
+            f: (x, y) => { // dN/dt = k*N*(NM - N)
+                const NM = 5000;
+                const k = 0.000095;
+                return k * y * (NM - y);
+            },
+            x0: 0.0,
+            y0: 100.0,
+            h: 0.5, // Adjust 'h' as needed for desired accuracy and number of points
+            x_end: 20.0
+        };
+
+        const paramsEjercicio2 = {
+            f: (x, y) => { // dA/dt = alpha * A * (1 - (A/k)^nu)
+                const alpha = 0.8;
+                const k_val = 60; // Renamed to avoid conflict with 'k' in Ej1
+                const nu = 0.25;
+                return alpha * y * (1 - Math.pow(y / k_val, nu));
+            },
+            x0: 0.0,
+            y0: 1.0,
+            h: 0.5, // Adjust 'h'
+            x_end: 30.0
+        };
+
+        const paramsEjercicio3 = {
+            f: (x, y) => { // dv/dt = -g + (k/m)*v^2
+                const m = 5; // kg
+                const g = 9.81; // m/s^2
+                const k_drag = 0.05; // kg/m (renamed to avoid conflict)
+                return -g + (k_drag / m) * y * y;
+            },
+            x0: 0.0,
+            y0: 0.0,
+            h: 0.5, // Adjust 'h'
+            x_end: 15.0
+        };
+
+        // Function to solve and display ODE results and charts
+        async function solveAndDisplayAllODEs() {
+            // Exercise 1
+            const resultEj1Heun = await solveODEHeun(paramsEjercicio1.f, paramsEjercicio1.x0, paramsEjercicio1.y0, paramsEjercicio1.h, paramsEjercicio1.x_end);
+            const resultEj1RK4 = await solveODERK4(paramsEjercicio1.f, paramsEjercicio1.x0, paramsEjercicio1.y0, paramsEjercicio1.h, paramsEjercicio1.x_end);
+            document.getElementById('resEj1Heun').innerText = resultEj1Heun.y_values[resultEj1Heun.y_values.length - 1].toFixed(7);
+            document.getElementById('resEj1RK4').innerText = resultEj1RK4.y_values[resultEj1RK4.y_values.length - 1].toFixed(7);
+            createChart('chartEj1', 'Crecimiento Poblacional (N)', resultEj1Heun.x_values, resultEj1Heun.y_values, resultEj1RK4.y_values);
+
+            // Exercise 2
+            const resultEj2Heun = await solveODEHeun(paramsEjercicio2.f, paramsEjercicio2.x0, paramsEjercicio2.y0, paramsEjercicio2.h, paramsEjercicio2.x_end);
+            const resultEj2RK4 = await solveODERK4(paramsEjercicio2.f, paramsEjercicio2.x0, paramsEjercicio2.y0, paramsEjercicio2.h, paramsEjercicio2.x_end);
+            document.getElementById('resEj2Heun').innerText = resultEj2Heun.y_values[resultEj2Heun.y_values.length - 1].toFixed(7);
+            document.getElementById('resEj2RK4').innerText = resultEj2RK4.y_values[resultEj2RK4.y_values.length - 1].toFixed(7);
+            createChart('chartEj2', 'Crecimiento Tumoral (A)', resultEj2Heun.x_values, resultEj2Heun.y_values, resultEj2RK4.y_values);
+
+            // Exercise 3
+            const resultEj3Heun = await solveODEHeun(paramsEjercicio3.f, paramsEjercicio3.x0, paramsEjercicio3.y0, paramsEjercicio3.h, paramsEjercicio3.x_end);
+            const resultEj3RK4 = await solveODERK4(paramsEjercicio3.f, paramsEjercicio3.x0, paramsEjercicio3.y0, paramsEjercicio3.h, paramsEjercicio3.x_end);
+            document.getElementById('resEj3Heun').innerText = resultEj3Heun.y_values[resultEj3Heun.y_values.length - 1].toFixed(7);
+            document.getElementById('resEj3RK4').innerText = resultEj3RK4.y_values[resultEj3RK4.y_values.length - 1].toFixed(7);
+            createChart('chartEj3', 'Velocidad en Caída Libre (v)', resultEj3Heun.x_values, resultEj3Heun.y_values, resultEj3RK4.y_values);
+        }
+
+        // Helper function to create charts
+        function createChart(canvasId, title, labels, dataHeun, dataRK4) {
+            new Chart(document.getElementById(canvasId), {
+                type: 'line',
+                data: {
+                    labels: labels.map(val => val.toFixed(1)),
+                    datasets: [
+                        {
+                            label: 'Heun',
+                            data: dataHeun,
+                            borderColor: 'green',
+                            fill: false,
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'RK4',
+                            data: dataRK4,
+                            borderColor: 'blue',
+                            fill: false,
+                            borderWidth: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'top' },
+                        title: {
+                            display: true,
+                            text: title
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Tiempo'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Valor de la Variable'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- ODE Solver Functions (This should ideally be in a separate js/ode_solver.js file) ---
+        // For demonstration, I'm including them here. In your actual setup, ensure ode_solver.js exists.
+
+        async function solveODEHeun(f, x0, y0, h, x_end) {
+            let x_values = [];
+            let y_values = [];
+            let x = x0;
+            let y = y0;
+
+            while (x <= x_end) {
+                x_values.push(x);
+                y_values.push(y);
+
+                let k1 = f(x, y);
+                let y_predictor = y + k1 * h;
+                let k2 = f(x + h, y_predictor);
+                y = y + (h / 2) * (k1 + k2);
+                x = x + h;
+            }
+            return { x_values, y_values };
+        }
+
+        async function solveODERK4(f, x0, y0, h, x_end) {
+            let x_values = [];
+            let y_values = [];
+            let x = x0;
+            let y = y0;
+
+            while (x <= x_end) {
+                x_values.push(x);
+                y_values.push(y);
+
+                let k1 = f(x, y);
+                let k2 = f(x + 0.5 * h, y + 0.5 * h * k1);
+                let k3 = f(x + 0.5 * h, y + 0.5 * h * k2);
+                let k4 = f(x + h, y + h * k3);
+                y = y + (h / 6) * (k1 + 2 * k2 + 2 * k3 + k4);
+                x = x + h;
+            }
+            return { x_values, y_values };
+        }
+        // --- End of ODE Solver Functions ---
+
+        document.addEventListener('DOMContentLoaded', () => {
+            solveAndDisplayAllODEs();
+        });
+    </script>
+</body>
+</html>

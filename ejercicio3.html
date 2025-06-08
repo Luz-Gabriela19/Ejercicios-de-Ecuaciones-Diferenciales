@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio 3: Velocidad de Objeto en Caída Libre</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <header>
+        <h1 class="page-title">Ejercicio 3: Velocidad de Objeto en Caída Libre</h1>
+    </header>
+    <nav class="main-menu">
+        <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="ejercicio1.html">Ejercicio 1</a></li>
+            <li><a href="ejercicio2.html">Ejercicio 2</a></li>
+            <li><a href="ejercicio3.html" class="active">Ejercicio 3</a></li>
+            <li><a href="resultados.html">Resultados</a></li>
+        </ul>
+    </nav>
+    <main class="container">
+        <h2>Problema:</h2>
+        <div class="problem-statement">
+            <img src="images/problem40.jpeg" alt="Problema de Velocidad de Objeto en Caída Libre" class="problem-image">
+            <p>La velocidad de un objeto que cae libremente debido a la gravedad terrestre puede modelarse con la ecuación:</p>
+            <p class="math-equation">
+                $$ m \frac{dv}{dt} = -mg + kv^2 $$
+            </p>
+            <p>
+                donde $m$ es la masa del objeto, $g = 9.81 \text{ m/s}^2$, y $k$ es una constante. Resuelva la ecuación para $v$ para el caso $m = 5 \text{ kg}$, $k = 0.05 \text{ kg/m}$, $0 \le t \le 15 \text{ s}$ y $v(0) = 0 \text{ m/s}$. Haga una gráfica de $v$ en función de $t$.
+            </p>
+        </div>
+
+        <h2>Solución Numérica:</h2>
+
+        <div class="button-container" style="text-align: center; margin-bottom: 30px;">
+            <button id="showHeunBtn" class="solution-button">Ver Solución con Heun</button>
+            <button id="showRK4Btn" class="solution-button">Ver Solución con Runge-Kutta 4º Orden</button>
+        </div>
+
+        <div id="heunSolution" class="solution-section" style="display: none;">
+            <h3>Método de Heun</h3>
+            <div class="table-container">
+                <table id="heunTable" class="ode-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>x (t)</th>
+                            <th>y (v)</th>
+                            <th>k1 = f(xi,yi)</th>
+                            <th>h</th>
+                            <th>xi+h</th>
+                            <th>yi+k1h</th>
+                            <th>k2</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="chart-container">
+                <canvas id="heunChart" width="600" height="400"></canvas>
+            </div>
+        </div>
+
+        <div id="rk4Solution" class="solution-section" style="display: none;">
+            <h3>Método de Runge-Kutta de 4º Orden</h3>
+            <div class="table-container">
+                <table id="rk4Table" class="ode-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>x (t)</th>
+                            <th>y (v)</th>
+                            <th>h</th>
+                            <th>K1=f(x,y)</th>
+                            <th>xK1=x+(1/2)h</th>
+                            <th>yK1=y+(1/2)K1h</th>
+                            <th>K2=f(xk1,yk1)</th>
+                            <th>xK2=x+(1/2)h</th>
+                            <th>yK2=y+(1/2)k2h</th>
+                            <th>K3=f(xk2,yk2)</th>
+                            <th>xK3=x+h</th>
+                            <th>yK3=y+k3h</th>
+                            <th>K4=f(xk3,yk3)</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="chart-container">
+                <canvas id="rk4Chart" width="600" height="400"></canvas>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/ode_solver.js"></script>
+    <script>
+        const odeParameters = {
+            f: (t, v) => {
+                const m = 5;    // kg
+                const g = 9.81; // m/s^2
+                const k = 0.05; // kg/m
+                // La ecuación es m * dv/dt = -mg + kv^2, por lo tanto dv/dt = (-mg + kv^2) / m
+                return (-m * g + k * v * v) / m;
+            },
+            x0: 0.0,   // t0 (tiempo inicial)
+            y0: 0.0,   // v(0) (velocidad inicial)
+            h: 0.5,    // Tamaño de paso
+            x_end: 15.0 // t_end (tiempo final)
+        };
+
+        // Variables para almacenar las instancias de Chart.js
+        let heunChartInstance = null;
+        let rk4ChartInstance = null;
+
+        // Función para destruir un gráfico Chart.js si existe
+        function destroyChart(chartInstance) {
+            if (chartInstance) {
+                chartInstance.destroy();
+                chartInstance = null; // Reinicia la variable
+            }
+            return chartInstance; // Devuelve null para la asignación
+        }
+
+        // Función para ocultar todas las secciones de solución
+        function hideAllSolutions() {
+            document.getElementById('heunSolution').style.display = 'none';
+            document.getElementById('rk4Solution').style.display = 'none';
+        }
+
+        // Función para mostrar la solución de Heun
+        function showHeunSolution() {
+            hideAllSolutions(); // Oculta todas las soluciones antes de mostrar la deseada
+            const heunSolutionDiv = document.getElementById('heunSolution');
+            heunSolutionDiv.style.display = 'block';
+
+            // Realiza el cálculo y renderiza la tabla y el gráfico de Heun
+            const heunSteps = heunMethod(odeParameters);
+            renderTableHeun(heunSteps);
+
+            // Destruye el gráfico anterior si existe antes de crear uno nuevo
+            heunChartInstance = destroyChart(heunChartInstance);
+            heunChartInstance = renderChart('heunChart', heunSteps, 'Método de Heun');
+        }
+
+        // Función para mostrar la solución de RK4
+        function showRK4Solution() {
+            hideAllSolutions(); // Oculta todas las soluciones antes de mostrar la deseada
+            const rk4SolutionDiv = document.getElementById('rk4Solution');
+            rk4SolutionDiv.style.display = 'block';
+
+            // Realiza el cálculo y renderiza la tabla y el gráfico de RK4
+            const rk4Steps = rk4Method(odeParameters);
+            renderTableRK4(rk4Steps);
+
+            // Destruye el gráfico anterior si existe antes de crear uno nuevo
+            rk4ChartInstance = destroyChart(rk4ChartInstance);
+            rk4ChartInstance = renderChart('rk4Chart', rk4Steps, 'Método de Runge-Kutta 4º Orden');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Asigna los eventos de click a los botones
+            document.getElementById('showHeunBtn').addEventListener('click', showHeunSolution);
+            document.getElementById('showRK4Btn').addEventListener('click', showRK4Solution);
+        });
+    </script>
+</body>
+</html>

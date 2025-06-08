@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Métodos Numéricos para ODEs</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <header>
+        <h1 class="page-title">Métodos Numéricos para Ecuaciones Diferenciales Ordinarias</h1>
+    </header>
+    <nav class="main-menu">
+        <ul>
+            <li><a href="ejercicio1.html">Ejercicio 1</a></li>
+            <li><a href="ejercicio2.html">Ejercicio 2</a></li>
+            <li><a href="ejercicio3.html">Ejercicio 3</a></li>
+            <li><a href="resultados.html">Resultados</a></li>
+        </ul>
+    </nav>
+    <main class="container">
+        <h2>Introducción</h2>
+        <p>
+            En esta aplicación exploraremos la resolución numérica de tres problemas reales modelados mediante 
+            <strong>Ecuaciones Diferenciales Ordinarias (EDOs)</strong>. Para ello utilizaremos dos métodos numéricos fundamentales:
+            <strong>Heun</strong> y <strong>Runge-Kutta de Cuarto Orden (RK4)</strong>. Cada ejercicio plantea un problema práctico en física o biología,
+            y su solución se presenta tanto en tablas paso a paso como en gráficas interactivas.
+        </p>
+
+        <h2>Método de Heun (o Euler Mejorado)</h2>
+        <p>
+            El método de Heun es una mejora del método de Euler, basado en un promedio de pendientes para mayor precisión. Dado un problema de la forma:
+        </p>
+        <p class="math-equation">$$ \frac{dy}{dx} = f(x, y), \quad y(x_0) = y_0 $$</p>
+        <p>El método sigue estos pasos:</p>
+        <ul>
+            <li>Calcular \( k_1 = f(x_i, y_i) \)</li>
+            <li>Predecir \( y_{i+1}^{(p)} = y_i + h \cdot k_1 \)</li>
+            <li>Calcular \( k_2 = f(x_i + h, y_{i+1}^{(p)}) \)</li>
+            <li>Actualizar con promedio: \( y_{i+1} = y_i + \frac{h}{2}(k_1 + k_2) \)</li>
+        </ul>
+
+        <h2>Método de Runge-Kutta de 4º Orden (RK4)</h2>
+        <p>
+            El método RK4 es uno de los más usados debido a su alta precisión. Utiliza 4 evaluaciones de la función por paso:
+        </p>
+        <ul>
+            <li>Calcular \( k_1 = f(x_i, y_i) \)</li>
+            <li>Calcular \( k_2 = f(x_i + \frac{h}{2}, y_i + \frac{h}{2}k_1) \)</li>
+            <li>Calcular \( k_3 = f(x_i + \frac{h}{2}, y_i + \frac{h}{2}k_2) \)</li>
+            <li>Calcular \( k_4 = f(x_i + h, y_i + h k_3) \)</li>
+            <li>Actualizar: 
+                $$ y_{i+1} = y_i + \frac{h}{6} (k_1 + 2k_2 + 2k_3 + k_4) $$
+            </li>
+        </ul>
+
+        <h2>¿Qué encontrarás en cada ejercicio?</h2>
+        <p>
+            Cada ejercicio muestra:
+            <ul>
+                <li>El enunciado del problema con su modelo matemático.</li>
+                <li>La tabla de pasos de cada método.</li>
+                <li>Una gráfica que compara los resultados de ambos métodos.</li>
+                <li>Ademas que para todos los ejercicios la variable de paso sera \( h = 0,5\)</li>
+            </ul>
+            ¡Selecciona un ejercicio del menú para comenzar!
+        </p>
+
+        <h2>Resultados Finales y Comparativos</h2>
+        <p>
+            En el apartado <strong>"Resultados"</strong>, podrás visualizar un resumen comparativo de los tres ejercicios. Allí se incluyen:
+            <ul>
+                <li>Los resultados finales obtenidos con Heun y RK4 para cada problema.</li>
+                <li>Tablas comparativas entre métodos.</li>
+                <li>Gráficas generales y <strong>conclusiones clave</strong> sobre la precisión, estabilidad y desempeño de cada técnica.</li>
+            </ul>
+            Este análisis te permitirá entender mejor cuándo conviene usar uno u otro método.
+        </p>
+    </main>
+</body>
+</html>

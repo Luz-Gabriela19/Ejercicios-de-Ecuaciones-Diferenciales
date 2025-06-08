@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio 1: Crecimiento Poblacional</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <header>
+        <h1 class="page-title">Ejercicio 1: Crecimiento Poblacional</h1>
+    </header>
+    <nav class="main-menu">
+        <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="ejercicio1.html" class="active">Ejercicio 1</a></li>
+            <li><a href="ejercicio2.html">Ejercicio 2</a></li>
+            <li><a href="ejercicio3.html">Ejercicio 3</a></li>
+            <li><a href="resultados.html">Resultados</a></li>
+        </ul>
+    </nav>
+    <main class="container">
+        <h2>Problema:</h2>
+        <div class="problem-statement">
+            <img src="images/problem37.jpeg" alt="Problema de Crecimiento Poblacional" class="problem-image">
+            <p>El crecimiento de la población de especies con capacidad limitada puede modelarse con la ecuación:</p>
+            <p class="math-equation">
+                $$ \frac{dN}{dt} = kN(N_M - N) $$
+            </p>
+            <p>
+                donde \(N\) es el tamaño de la población, \(N_M\) es el número límite para la población, y \(k\) es una constante. Considere el caso donde \(N_M = 5000\), \(k = 0.00095 \text{ 1/yr}\), y \(N(0) = 100\). Determine \(N\) para \(0 \le t \le 20\). Haga una gráfica de \(N\) en función de \(t\).
+            </p>
+        </div>
+
+        <h2>Solución Numérica:</h2>
+
+        <div class="button-container" style="text-align: center; margin-bottom: 30px;">
+            <button id="showHeunBtn" class="solution-button">Ver Solución con Heun</button>
+            <button id="showRK4Btn" class="solution-button">Ver Solución con Runge-Kutta 4º Orden</button>
+        </div>
+
+        <div id="heunSolution" class="solution-section" style="display: none;">
+            <h3>Método de Heun</h3>
+            <div class="table-container">
+                <table id="heunTable" class="ode-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>x</th>
+                            <th>y</th>
+                            <th>k1 = f(xi,yi)</th>
+                            <th>h</th>
+                            <th>xi+h</th>
+                            <th>yi+k1h</th>
+                            <th>k2</th>
+                            </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="chart-container">
+                <canvas id="heunChart" width="600" height="400"></canvas>
+            </div>
+        </div>
+
+        <div id="rk4Solution" class="solution-section" style="display: none;">
+            <h3>Método de Runge-Kutta de 4º Orden</h3>
+            <div class="table-container">
+                <table id="rk4Table" class="ode-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>x</th>
+                            <th>y</th>
+                            <th>h</th>
+                            <th>K1=f(x,y)</th>
+                            <th>xK1=x+(1/2)h</th>
+                            <th>yK1=y+(1/2)K1h</th>
+                            <th>K2=f(xk1,yk1)</th>
+                            <th>xK2=x+(1/2)h</th>
+                            <th>yK2=y+(1/2)k2h</th>
+                            <th>K3=f(xk2,yk2)</th>
+                            <th>xK3=x+h</th>
+                            <th>yK3=y+k3h</th>
+                            <th>K4=f(xk3,yk3)</th>
+                            </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="chart-container">
+                <canvas id="rk4Chart" width="600" height="400"></canvas>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/ode_solver.js"></script>
+    <script>
+        // Parameters for the ODE problem
+        const odeParameters = {
+            // The differential equation function dN/dt = kN(NM - N)
+            f: (x, y) => {
+                const NM = 5000;
+                const k = 0.000095; 
+                return k * y * (NM - y);
+            },
+            x0: 0.0, 
+            y0: 100.0, 
+            h: 0.5, 
+            x_end: 20.0 
+        };
+
+        let heunChartInstance = null;
+        let rk4ChartInstance = null;
+
+        function destroyChart(chartInstance) {
+            if (chartInstance) {
+                chartInstance.destroy();
+                chartInstance = null;
+            }
+            return chartInstance;
+        }
+
+        function hideAllSolutions() {
+            document.getElementById('heunSolution').style.display = 'none';
+            document.getElementById('rk4Solution').style.display = 'none';
+        }
+
+        function showHeunSolution() {
+            hideAllSolutions();
+            const heunSolutionDiv = document.getElementById('heunSolution');
+            heunSolutionDiv.style.display = 'block';
+
+            const heunSteps = heunMethod(odeParameters);
+            renderTableHeun(heunSteps);
+
+            heunChartInstance = destroyChart(heunChartInstance);
+            heunChartInstance = renderChart('heunChart', heunSteps, 'Población con Método de Heun');
+        }
+
+        function showRK4Solution() {
+            hideAllSolutions();
+            const rk4SolutionDiv = document.getElementById('rk4Solution');
+            rk4SolutionDiv.style.display = 'block';
+
+            const rk4Steps = rk4Method(odeParameters);
+            renderTableRK4(rk4Steps);
+
+            rk4ChartInstance = destroyChart(rk4ChartInstance);
+            rk4ChartInstance = renderChart('rk4Chart', rk4Steps, 'Población con Runge-Kutta 4º Orden');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('showHeunBtn').addEventListener('click', showHeunSolution);
+            document.getElementById('showRK4Btn').addEventListener('click', showRK4Solution);
+        });
+    </script>
+</body>
+</html>
